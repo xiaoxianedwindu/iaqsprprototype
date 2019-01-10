@@ -16,10 +16,9 @@ pwm_motor.start(7.5)
 gpio.setup(GPIO_TRIGGER,gpio.OUT)
 gpio.setup(GPIO_ECHO,gpio.IN)
 gpio.setup(SWITCH_PIN, gpio.OUT)
-spinTime = 0.75
+spinTime = 0.0001
 
 ser = serial.Serial('/dev/ttyUSB0', 9600)
-
 
 pm25_current = 0
  
@@ -39,7 +38,13 @@ reverseLeft = PWMOutputDevice(PWM_REVERSE_LEFT_PIN, True, 0, 1000)
 forwardRight = PWMOutputDevice(PWM_FORWARD_RIGHT_PIN, True, 0, 1000)
 reverseRight = PWMOutputDevice(PWM_REVERSE_RIGHT_PIN, True, 0, 1000)
  
- 
+x = 0
+y = 0
+c = 0
+coordStatus = 0 
+goStatus = 1
+
+
 def allStop():
         print("allStop")
         forwardLeft.value = 0
@@ -65,16 +70,16 @@ def reverseDrive():
 def spinLeft():
         print("spinLeft")
         forwardLeft.value = 0
-        reverseLeft.value = 1.0
-        forwardRight.value = 1.0
+        reverseLeft.value = 0.8
+        forwardRight.value = 0.8
         reverseRight.value = 0
  
 def spinRight():
         print("spinRight")
-        forwardLeft.value = 1.0
+        forwardLeft.value = 0.8
         reverseLeft.value = 0
         forwardRight.value = 0
-        reverseRight.value = 1.0
+        reverseRight.value = 0.8
  
 def forwardTurnLeft():
         print("fowardTurnLeft")
@@ -134,8 +139,10 @@ def dist_check():
 def checkForwardDrive():
     flag = 0
     distance_0 = distance()
-    print(distance_0)
-    if (distance_0 < 20):
+    #print(distance_0)
+    global x, y, goStatus
+    printInfo()
+    if (distance_0 < 35):
         allStop()
         pwm_motor.ChangeDutyCycle(2.5)
         time.sleep(0.75)
@@ -152,24 +159,69 @@ def checkForwardDrive():
             spinLeft()
             time.sleep(spinTime)
             #print("Yo, left is clear")
+            goL()
         else:
             spinRight()
             time.sleep(spinTime)
             #print("Right is clear")
-        time.sleep(1)
+            goR()
+        time.sleep(1.25)
     else:
         forwardDrive()
+        #print("Status = " + str(goStatus))
+        coord(goStatus)
         flag = 0
+        
+def goL():
+    global goStatus
+    if (goStatus == 1):
+        goStatus = 3
+    elif (goStatus == 2):
+        goStatus = 4
+    elif (goStatus == 3):
+        goStatus = 2
+    elif (goStatus == 4):
+        goStatus = 1
+    else:
+        print("goL oops")
+        
+def goR():
+    global goStatus
+    if (goStatus == 1):
+        goStatus = 4
+    elif (goStatus == 2):
+        goStatus = 3
+    elif (goStatus == 3):
+        goStatus = 1
+    elif (goStatus == 4):
+        goStatus = 2
+    else:
+        print("goR oops")
+        
+def coord(coordStatus):
+    global x, y
+    if (coordStatus == 1):
+        x += 1
+    elif (coordStatus == 2):
+        x -= 1
+    elif (coordStatus == 3):
+        y += 1
+    elif(coordStatus == 4):
+        y -= 1
+    else:
+        print("oops")
 
 def sensor_input():
+    global pm25_current
     pm25_1 = int(ser.readline())
-    print(pm25_1)
+    #print(pm25_1)
     pm25_current = pm25_1
     if (pm25_1 > 30):
         switchon()
         time.sleep(2)
     else:
         switchoff()
+        
     '''
     pm25_2 = int(ser.readline())
     pm25_3 = int(ser.readline())
@@ -192,9 +244,13 @@ def switchcheck():
         time.sleep(5)
     else:
         switchoff()
+
+def printInfo():
+    global x, y, goStatus, pm25_current
+    print(x, y, goStatus, pm25_current)
               
 def main():
-        #checkForwardDrive()
+        checkForwardDrive()
         sensor_input()
         #switchcheck()
         '''

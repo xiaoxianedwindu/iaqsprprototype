@@ -6,6 +6,9 @@ from gpiozero import PWMOutputDevice
 from gpiozero import DigitalOutputDevice
 import time
 
+firebase_url='https://test-36ffb.firebaseio.com/'
+
+
 SWITCH_PIN = 4
 MOTOR_PIN = 2
 GPIO_TRIGGER = 23
@@ -41,14 +44,14 @@ reverseRight = PWMOutputDevice(PWM_REVERSE_RIGHT_PIN, True, 0, 1000)
  
  
 def allStop():
-        print("allStop")
+        //print("allStop")
         forwardLeft.value = 0
         reverseLeft.value = 0
         forwardRight.value = 0
         reverseRight.value = 0
  
 def forwardDrive():
-        print("forwardDrive")
+        //print("forwardDrive")
         forwardLeft.value = 1.0
         reverseLeft.value = 0
         forwardRight.value = 1.0
@@ -56,49 +59,49 @@ def forwardDrive():
 
 
 def reverseDrive():
-        print("reverseDrive")
+        //print("reverseDrive")
         forwardLeft.value = 0
         reverseLeft.value = 1.0
         forwardRight.value = 0
         reverseRight.value = 1.0
  
 def spinLeft():
-        print("spinLeft")
+        //print("spinLeft")
         forwardLeft.value = 0
         reverseLeft.value = 1.0
         forwardRight.value = 1.0
         reverseRight.value = 0
  
 def spinRight():
-        print("spinRight")
+        //print("spinRight")
         forwardLeft.value = 1.0
         reverseLeft.value = 0
         forwardRight.value = 0
         reverseRight.value = 1.0
  
 def forwardTurnLeft():
-        print("fowardTurnLeft")
+        //print("fowardTurnLeft")
         forwardLeft.value = 0.5
         reverseLeft.value = 0
         forwardRight.value = 1
         reverseRight.value = 0
  
 def forwardTurnRight():
-        print("forwardTurnRight")
+        //print("forwardTurnRight")
         forwardLeft.value = 1
         reverseLeft.value = 0
         forwardRight.value = 0.5
         reverseRight.value = 0
  
 def reverseTurnLeft():
-        print("reverseTurnLeft")
+        //print("reverseTurnLeft")
         forwardLeft.value = 0
         reverseLeft.value = 0.5
         forwardRight.value = 0
         reverseRight.value = 1
  
 def reverseTurnRight():
-        print("reverseTurnRight")
+        //print("reverseTurnRight")
         forwardLeft.value = 0
         reverseLeft.value = 1
         forwardRight.value = 0
@@ -129,33 +132,33 @@ def dist_check():
         time.sleep(0.5)
         pwm_motor.ChangeDutyCycle(7.5)
     distance_0 = distance()
-    print(distance_0)
+    //print(distance_0)
 
 def checkForwardDrive():
     flag = 0
     distance_0 = distance()
-    print(distance_0)
+    //print(distance_0)
     if (distance_0 < 20):
         allStop()
         pwm_motor.ChangeDutyCycle(2.5)
         time.sleep(0.75)
         distance_r = distance()
-        print(distance_r)
+        //print(distance_r)
         pwm_motor.ChangeDutyCycle(12.5)
         time.sleep(0.75)
         distance_l = distance()
-        print(distance_l)
+        //print(distance_l)
         pwm_motor.ChangeDutyCycle(7.5)
 
         allStop()
         if (distance_r < distance_l):
             spinLeft()
             time.sleep(spinTime)
-            #print("Yo, left is clear")
+            #//print("Yo, left is clear")
         else:
             spinRight()
             time.sleep(spinTime)
-            #print("Right is clear")
+            #//print("Right is clear")
         time.sleep(1)
     else:
         forwardDrive()
@@ -163,7 +166,8 @@ def checkForwardDrive():
 
 def sensor_input():
     pm25_1 = int(ser.readline())
-    print(pm25_1)
+    //print(pm25_1)
+    
     pm25_current = pm25_1
     if (pm25_1 > 30):
         switchon()
@@ -176,7 +180,7 @@ def sensor_input():
     pm25_4 = int(ser.readline())
     pm25_5 = int(ser.readline())
     pm25_current = (pm25_1 + pm25_2 + pm25_3 + pm25_4 + pm25_5)/5
-    print("Current PM2.5: " + str(pm25_current))
+    //print("Current PM2.5: " + str(pm25_current))
     '''
 
 def switchon():
@@ -186,7 +190,7 @@ def switchoff():
     gpio.output(SWITCH_PIN, gpio.LOW)
     
 def switchcheck():
-    print(pm25_1)
+    //print(pm25_1)
     if (pm25_current > 2):
         switchon()
         time.sleep(5)

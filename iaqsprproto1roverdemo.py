@@ -16,10 +16,9 @@ pwm_motor.start(7.5)
 gpio.setup(GPIO_TRIGGER,gpio.OUT)
 gpio.setup(GPIO_ECHO,gpio.IN)
 gpio.setup(SWITCH_PIN, gpio.OUT)
-spinTime = 0.75
+spinTime = 0.025
 
 ser = serial.Serial('/dev/ttyUSB0', 9600)
-
 
 pm25_current = 0
  
@@ -195,8 +194,18 @@ def switchcheck():
               
 def main():
         #checkForwardDrive()
-        sensor_input()
+        #sensor_input()
         #switchcheck()
+        forwardDrive()
+        time.sleep(5)
+        spinRight()
+        time.sleep(3)
+        fowardDrive()
+        time.sleep(3)
+        spinRight()
+        time.sleep(2)
+        allStop()
+        time.sleep(10)
         '''
         reverseDrive()
         time.sleep(5)

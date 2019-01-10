@@ -165,7 +165,7 @@ def sensor_input():
     pm25_1 = int(ser.readline())
     print(pm25_1)
     pm25_current = pm25_1
-    if (pm25_1 > 30):
+    if (pm25_1 > 35):
         switchon()
         time.sleep(2)
     else:
